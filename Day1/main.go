@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -10,40 +9,53 @@ import (
 
 func main() {
 	numbers := readfile("testinput.txt")
-
-	var testIncreases = find_deeper_count(numbers)
-	println(testIncreases)
-
-	var testSliceIncreases = find_deeper_count_sliding_window(numbers, 3)
-	println(testSliceIncreases)
-
 	realNumbers := readfile("day1input.txt")
-	var increases = find_deeper_count(realNumbers)
-	println(increases)
+
+	println("Part 1 test data: ", find_deeper_count(numbers))
+	println("Part 1 actual data: ", find_deeper_count(realNumbers))
+
+	// Part 2
+	println("Part 2 test data: ", find_deeper_count_sliding_window(numbers, 3))
+	println("Part 2 actual data: ", find_deeper_count_sliding_window(realNumbers, 3))
 
 }
 
 func find_deeper_count_sliding_window(numbers []int, sliceSize int) int {
-	var thisSlice int = 0
-	var lastSlice int = 0
-	var increases int = 0
+	var indexStart int = 0
+	var indexEnd int = indexStart + sliceSize
+	var lastSliceSum int = 0
+	var thisSliceSum int
+	var increaseCounter = 0
 
-	for index, number := range numbers {
-		//	fmt.Println(index, number)
-		if index >= 0 && (index%sliceSize == 0) {
-			if lastSlice > thisSlice {
-				increases++
-			}
-			fmt.Println(thisSlice)
-			lastSlice = thisSlice
-			thisSlice = 0
-
+	for range numbers {
+		lastSliceSum = thisSliceSum
+		thisSliceSum = addArray(numbers[indexStart:indexEnd])
+		if lastSliceSum == 0 {
+			lastSliceSum = thisSliceSum
 		}
-		thisSlice += number
+
+		if thisSliceSum > lastSliceSum {
+			increaseCounter++
+		}
+
+		indexStart++
+		indexEnd++
+
+		if indexEnd > len(numbers) {
+			break
+		}
 	}
 
-	return increases
+	return increaseCounter
 
+}
+
+func addArray(numbs []int) int {
+	result := 0
+	for _, numb := range numbs {
+		result += numb
+	}
+	return result
 }
 
 func find_deeper_count(numbers []int) int {
