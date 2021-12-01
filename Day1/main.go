@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -13,9 +14,35 @@ func main() {
 	var testIncreases = find_deeper_count(numbers)
 	println(testIncreases)
 
+	var testSliceIncreases = find_deeper_count_sliding_window(numbers, 3)
+	println(testSliceIncreases)
+
 	realNumbers := readfile("day1input.txt")
 	var increases = find_deeper_count(realNumbers)
 	println(increases)
+
+}
+
+func find_deeper_count_sliding_window(numbers []int, sliceSize int) int {
+	var thisSlice int = 0
+	var lastSlice int = 0
+	var increases int = 0
+
+	for index, number := range numbers {
+		//	fmt.Println(index, number)
+		if index >= 0 && (index%sliceSize == 0) {
+			if lastSlice > thisSlice {
+				increases++
+			}
+			fmt.Println(thisSlice)
+			lastSlice = thisSlice
+			thisSlice = 0
+
+		}
+		thisSlice += number
+	}
+
+	return increases
 
 }
 
