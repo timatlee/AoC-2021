@@ -16,8 +16,32 @@ func main() {
 
 	// Part 2
 	println("Part 2 test data: ", find_deeper_count_sliding_window(numbers, 3))
+	println("test?", test(numbers))
 	println("Part 2 actual data: ", find_deeper_count_sliding_window(realNumbers, 3))
+	println("Part 2 actual data: ", test(realNumbers))
 
+}
+
+func test(numbers []int) int {
+	var sliceSize = 3
+	var indexStart int = 0
+	var indexEnd int = indexStart + sliceSize
+	var increaseCounter = 0
+
+	for range numbers {
+		if numbers[indexEnd] > numbers[indexStart] {
+			increaseCounter++
+		}
+
+		indexStart++
+		indexEnd++
+
+		if indexEnd >= len(numbers) {
+			break
+		}
+	}
+
+	return increaseCounter
 }
 
 func find_deeper_count_sliding_window(numbers []int, sliceSize int) int {
@@ -47,7 +71,6 @@ func find_deeper_count_sliding_window(numbers []int, sliceSize int) int {
 	}
 
 	return increaseCounter
-
 }
 
 func addArray(numbs []int) int {
