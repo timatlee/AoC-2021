@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -28,20 +27,21 @@ func main() {
 func find_total_position(commands []string) int {
 	var pos int = 0
 	var depth int = 0
+	var aim int = 0
 
 	for _, rawcommand := range commands {
-		fmt.Println(rawcommand)
 		split := strings.Split(rawcommand, " ")
 		command := split[0]
 		distance, _ := strconv.Atoi(split[1])
 
 		switch command {
 		case "up":
-			depth -= distance
+			aim -= distance
 		case "down":
-			depth += distance
+			aim += distance
 		case "forward":
 			pos += distance
+			depth = depth + (aim * distance)
 		}
 
 	}
