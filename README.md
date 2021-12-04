@@ -11,3 +11,12 @@ Chris pointed out that if you're checking `b + c + d > a + b + c`, then you migh
 In part 2, I did not understand the assignment. I kept using the full list of commands, not the subset of commands after the initial filtering.
 
 I wasn't able to leverage the work I did in the first part - which depended on the information from the WHOLE collection.
+
+## Day 4
+
+These bingo boards sound like the should be classes, which I am woefully weak with in Go.
+
+Some points to remember:
+- member names in the `struct` that are lower case are effectively private.
+- You "hang" methods off the struct. There is no class definition.
+
