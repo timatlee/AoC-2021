@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -10,126 +9,94 @@ import (
 
 func main() {
 	commands := readfile("testinput.txt")
-
-	testdata_power, testdata_oxygen, testdata_cotwo := find_power_consumption(commands)
+	testdata_power := find_power_consumption(commands)
 	println("Part 1 test data (should be 198): ", testdata_power)
-	println("Part 2 test data (should be 230): ", find_life_support_rating(commands, testdata_oxygen, testdata_cotwo))
+	println("Part 2 test data (should be 230): ", find_life_support_rating(commands))
 
-	/*
-		realCommands := readfile("day3input.txt")
-		realdata_power, realdata_oxygen, realdata_cotwo := find_power_consumption(realCommands)
-		println("Part 1 actual data: ", realdata_power)
-		println("Part 2 actual data: ", find_life_support_rating(realCommands, realdata_oxygen, realdata_cotwo))
-	*/
+	realCommands := readfile("day3input.txt")
+	realdata_power := find_power_consumption(realCommands)
+	println("Part 1 actual data: ", realdata_power)
+	println("Part 2 actual data: ", find_life_support_rating(realCommands))
+
 }
 
-func find_life_support_rating(commands []string, oxygen string, cotwo string) int {
-	// Commands related to oxygen system.
-	oxygen_commands := append([]string{}, commands...)
-	cotwo_commands := append([]string{}, commands...)
+func find_string_with_value_in_index(commands []string, index int, value byte) []string {
+	var s []string
+	for i := 0; i < len(commands); i++ {
+		command := commands[i]
+		if command[index] == value {
+			s = append(s, command)
+		}
+	}
+	return s
+}
+
+func count_values_in_index(commands []string, index int) (int, int) {
+	var zeros, ones int = 0, 0
+	// Iterate over the list of strings
+	for i := 0; i < len(commands); i++ {
+		// Test each string's index's value
+		if commands[i][index] == '1' {
+			ones++
+		} else {
+			zeros++
+		}
+	}
+	return zeros, ones
+}
+
+func find_life_support_rating(commands []string) int {
+	// make a copy of the original commands
+	o := append([]string{}, commands...)
 
 	// Loop over the list of MSB bits in Oxygen.
-	for i := 0; i < len(oxygen); i++ {
-		// MSB of all the bits in this position.
-		msbbit := oxygen[i]
+	for i := 0; i < len(commands[0]); i++ {
+		// Find how many 0s and 1s there are in the list of commands
+		number0, number1 := count_values_in_index(o, i)
+		//fmt.Print("index", i, number0, number1)
 
-		// Commands that we're keeping from this loop.
-		var kept_commands []string
+		if number0 > number1 {
+			o = find_string_with_value_in_index(o, i, byte('0'))
+		} else if number1 > number0 {
+			o = find_string_with_value_in_index(o, i, byte('1'))
+		} else if number1 == number0 {
+			o = find_string_with_value_in_index(o, i, byte('1'))
+		}
 
-		// fmt.Println("Bitness to keep:", msbbit-48, "in position", i)
-
-		// Check if there are more than two commands left.  If so..
-		if len(oxygen_commands) > 2 {
-			// Now loop over all our commands
-			for j := 0; j < len(oxygen_commands); j++ {
-				// Test if a command, bit position i, matches.
-				if oxygen_commands[j][i] == msbbit {
-					kept_commands = append(kept_commands, oxygen_commands[j])
-				}
-			}
-		} else if len(oxygen_commands) == 2 {
-			// If not, we need to find which command is "bigger".
-			first, _ := strconv.ParseInt(oxygen_commands[0], 2, 64)
-			second, _ := strconv.ParseInt(oxygen_commands[1], 2, 64)
-			if first > second {
-				kept_commands = append(kept_commands, oxygen_commands[0])
-			} else {
-				kept_commands = append(kept_commands, oxygen_commands[1])
-			}
-		} else {
+		//fmt.Println(o)
+		if len(o) < 2 {
 			break
 		}
-		oxygen_commands = kept_commands
-		// fmt.Println("Oxygen MSB index", i, "MSB Bit", msbbit-48, "remaining commands", oxygen_commands)
 	}
 
-	// Loop over the list of MSB bits in CO2.
-	for i := 0; i < len(cotwo); i++ {
-		// MSB of all the bits in this position.
-		msbbit := cotwo[i]
+	c := append([]string{}, commands...)
+	// Loop over the list of :SB bits in CO2.
+	for i := 0; i < len(commands[0]); i++ {
+		// Find how many 0s and 1s there are in the list of commands
+		number0, number1 := count_values_in_index(c, i)
+		//fmt.Print("index", i, number0, number1)
 
-		// Commands that we're keeping from this loop.
-		var kept_commands []string
+		if number0 > number1 {
+			c = find_string_with_value_in_index(c, i, byte('1'))
+		} else if number1 > number0 {
+			c = find_string_with_value_in_index(c, i, byte('0'))
+		} else if number1 == number0 {
+			c = find_string_with_value_in_index(c, i, byte('0'))
+		}
 
-		// fmt.Println("Bitness to keep:", msbbit-48, "in position", i)
-
-		// Check if there are more than two commands left.  If so..
-		if len(cotwo_commands) > 2 {
-			// Now loop over all our commands
-			for j := 0; j < len(cotwo_commands); j++ {
-				// Test if a command, bit position i, matches.
-				if cotwo_commands[j][i] == msbbit {
-					kept_commands = append(kept_commands, cotwo_commands[j])
-				}
-			}
-		} else if len(cotwo_commands) == 2 {
-			// If not, we need to find which command is "bigger".
-			first, _ := strconv.ParseInt(cotwo_commands[0], 2, 64)
-			second, _ := strconv.ParseInt(cotwo_commands[1], 2, 64)
-			if first < second {
-				kept_commands = append(kept_commands, cotwo_commands[0])
-			} else {
-				kept_commands = append(kept_commands, cotwo_commands[1])
-			}
-		} else {
+		//fmt.Println(c)
+		if len(c) < 2 {
 			break
 		}
-		cotwo_commands = kept_commands
-		//fmt.Println("CO2 MSB index", i, "MSB Bit", msbbit-48, "remaining commands", cotwo_commands)
 	}
 
-	// oxygen_commands now contains the binary value of our oxygen.
-	// cotwo_commands contains the binary value of our co2.
-
-	oxygen_value, _ := strconv.ParseInt(oxygen_commands[0], 2, 64)
-	cotwo_value, _ := strconv.ParseInt(cotwo_commands[0], 2, 64)
-
-	fmt.Println(oxygen_commands[0], cotwo_commands[0], oxygen_value, cotwo_value)
+	oxygen_value, _ := strconv.ParseInt(o[0], 2, 64)
+	cotwo_value, _ := strconv.ParseInt(c[0], 2, 64)
 
 	return int(oxygen_value) * int(cotwo_value)
 }
 
-func remove(slice []string, s int) []string {
-	return append(slice[:s], slice[s+1:]...)
-
-	/*
-		copy(slice[s:], slice[s+1:])
-		slice[len(slice)-1] = ""
-		slice = slice[:len(slice)-1]
-	*/
-
-	/*
-		var newslice []string
-		for i := 0; i < len(slice); i++ {
-			if i != s {
-				newslice = append(newslice, slice[i])
-			}
-		}
-		return newslice
-	*/
-}
-
-func find_power_consumption(commands []string) (int, string, string) {
+func find_power_consumption(commands []string) int {
 	position_ones := make(map[int]int)
 	position_zeros := make(map[int]int)
 
@@ -167,7 +134,7 @@ func find_power_consumption(commands []string) (int, string, string) {
 	epsilon_value, _ := strconv.ParseInt(epsilon, 2, 64)
 	// fmt.Println("Gamma", gamma, "Epsilon", epsilon)
 	// fmt.Println("Gamma", gamma_value, "Epsilon", epsilon_value)
-	return int(gamma_value) * int(epsilon_value), gamma, epsilon
+	return int(gamma_value) * int(epsilon_value)
 }
 
 func readfile(filename string) []string {
