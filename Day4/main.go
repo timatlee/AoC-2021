@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"./bingo"
@@ -12,37 +13,59 @@ import (
 
 func main() {
 	filecontent := readfile("testinput.txt")
+	draws, bingos := parse_input_data(filecontent)
 
+	fmt.Println("Numbers drawn:", draws)
+	//fmt.Println("Bingo cards:", bingos)
+
+	var hasWin bool = false
+	var winningNumber int = 0
+	var winningBoardindex int = -1
+	for d := 0; d < len(draws); d++ {
+		draw_number, _ := strconv.ParseInt(draws[d], 10, 64)
+		if !hasWin {
+			for i := 0; i < len(bingos); i++ {
+				state := bingos[i].PlayNumber(int(draw_number))
+
+				if state {
+					fmt.Println("Found winning number", draw_number, "board", i)
+					hasWin = true
+					winningNumber = int(draw_number)
+					winningBoardindex = i
+					break
+				}
+
+			}
+		}
+	}
+
+	fmt.Println("Winning board:", winningBoardindex, "Winning number", winningNumber, "Score", bingos[winningBoardindex].GetScore(), "final score", winningNumber*bingos[winningBoardindex].GetScore())
+
+	fmt.Println("Bingo cards:\n", bingos)
+
+}
+
+func parse_input_data(filecontent []string) ([]string, []bingo.Bingo) {
 	// This is gross, but works. First element of filecontent is our plays.
 	var number_draws = strings.Split(filecontent[0], ",")
-	fmt.Println(number_draws)
 
-	var boards_rows []string
+	var bingos []bingo.Bingo
+	var rawrows []string
 	// Skip the first row, since it's the list of number draws.
 	for i := 1; i < len(filecontent); i++ {
 		if len(filecontent[i]) > 0 {
-			boards_rows = append(boards_rows, filecontent[i])
+			// Append the current row to the list of rawrows
+			rawrows = append(rawrows, filecontent[i])
+
+			// Once that list of rawrows is 5, we're done with this card - create a new Bingo, give it the rows, start over.
+			if len(rawrows) == 5 {
+				b := bingo.New(rawrows)
+				bingos = append(bingos, b)
+				rawrows = nil
+			}
 		}
 	}
-
-	// Loop over our board_rows, and add 5 rows to a new Bingo.
-	var bingos []bingo.Bingo
-	var rawrows []string
-	for i := 0; i < len(boards_rows); i++ {
-		// Append the current row to the list of rawrows
-		rawrows = append(rawrows, boards_rows[i])
-
-		// Once that list of rawrows is 5, we're done with this card - create a new Bingo, give it the rows, start over.
-		if len(rawrows) == 5 {
-			b := bingo.New(rawrows)
-			bingos = append(bingos, b)
-			rawrows = nil
-		}
-	}
-	// boards_rows has all valid rows of each board. Now how many boards do we have?
-	// board_count := len(boards_rows)/5
-
-	fmt.Println(bingos)
+	return number_draws, bingos
 }
 
 func readfile(filename string) []string {
