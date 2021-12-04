@@ -10,6 +10,7 @@ type Bingo struct {
 	board   [5][5]int
 	marked  [5][5]bool
 	rawRows []string
+	IsWon   bool
 }
 
 func New(rawrows []string) Bingo {
@@ -96,6 +97,7 @@ func (b *Bingo) checkBoard() bool {
 	}
 
 	if foundRow {
+		b.IsWon = true
 		return true
 	}
 
@@ -115,8 +117,10 @@ func (b *Bingo) checkBoard() bool {
 	}
 
 	if foundCol {
+		b.IsWon = true
 		return true
 	}
 
+	b.IsWon = false
 	return false
 }

@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	filecontent := readfile("testinput.txt")
+	filecontent := readfile("day4input.txt")
 	draws, bingos := parse_input_data(filecontent)
 
 	fmt.Println("Numbers drawn:", draws)
@@ -25,24 +25,39 @@ func main() {
 		draw_number, _ := strconv.ParseInt(draws[d], 10, 64)
 		if !hasWin {
 			for i := 0; i < len(bingos); i++ {
-				state := bingos[i].PlayNumber(int(draw_number))
+				bingos[i].PlayNumber(int(draw_number))
 
-				if state {
+				if bingos[i].IsWon {
 					fmt.Println("Found winning number", draw_number, "board", i)
-					hasWin = true
 					winningNumber = int(draw_number)
 					winningBoardindex = i
-					break
+					//hasWin = true
+					//break
 				}
 
+				// Check if all boards are in the winningBoards list
+				if check_all_boards_played(bingos) {
+					hasWin = true
+					break
+				}
 			}
 		}
+
 	}
 
 	fmt.Println("Winning board:", winningBoardindex, "Winning number", winningNumber, "Score", bingos[winningBoardindex].GetScore(), "final score", winningNumber*bingos[winningBoardindex].GetScore())
 
-	fmt.Println("Bingo cards:\n", bingos)
+	//fmt.Println("Bingo cards:\n", bingos)
 
+}
+
+func check_all_boards_played(s []bingo.Bingo) bool {
+	for _, board := range s {
+		if !board.IsWon {
+			return false
+		}
+	}
+	return true
 }
 
 func parse_input_data(filecontent []string) ([]string, []bingo.Bingo) {
