@@ -10,39 +10,103 @@ import (
 
 func main() {
 	commands := readfile("testinput.txt")
-	//	realCommands := readfile("day3input.txt")
 
 	testdata_power, testdata_oxygen, testdata_cotwo := find_power_consumption(commands)
 	println("Part 1 test data (should be 198): ", testdata_power)
 	println("Part 2 test data (should be 230): ", find_life_support_rating(commands, testdata_oxygen, testdata_cotwo))
 
 	/*
+		realCommands := readfile("day3input.txt")
 		realdata_power, realdata_oxygen, realdata_cotwo := find_power_consumption(realCommands)
 		println("Part 1 actual data: ", realdata_power)
-		println("Part 2 actual data: ", find_life_support_rating(commands, realdata_oxygen, realdata_cotwo))
+		println("Part 2 actual data: ", find_life_support_rating(realCommands, realdata_oxygen, realdata_cotwo))
 	*/
 }
 
 func find_life_support_rating(commands []string, oxygen string, cotwo string) int {
+	// Commands related to oxygen system.
 	oxygen_commands := append([]string{}, commands...)
+	cotwo_commands := append([]string{}, commands...)
+
 	// Loop over the list of MSB bits in Oxygen.
 	for i := 0; i < len(oxygen); i++ {
+		// MSB of all the bits in this position.
 		msbbit := oxygen[i]
+
+		// Commands that we're keeping from this loop.
 		var kept_commands []string
-		fmt.Println("Bitness to keep:", msbbit-48, "in position", i)
-		// Now loop over all our commands
+
+		// fmt.Println("Bitness to keep:", msbbit-48, "in position", i)
+
+		// Check if there are more than two commands left.  If so..
 		if len(oxygen_commands) > 2 {
+			// Now loop over all our commands
 			for j := 0; j < len(oxygen_commands); j++ {
 				// Test if a command, bit position i, matches.
 				if oxygen_commands[j][i] == msbbit {
 					kept_commands = append(kept_commands, oxygen_commands[j])
 				}
 			}
+		} else if len(oxygen_commands) == 2 {
+			// If not, we need to find which command is "bigger".
+			first, _ := strconv.ParseInt(oxygen_commands[0], 2, 64)
+			second, _ := strconv.ParseInt(oxygen_commands[1], 2, 64)
+			if first > second {
+				kept_commands = append(kept_commands, oxygen_commands[0])
+			} else {
+				kept_commands = append(kept_commands, oxygen_commands[1])
+			}
+		} else {
+			break
 		}
 		oxygen_commands = kept_commands
-		fmt.Println("Oxygen MSB index", i, "MSB Bit", msbbit-48, "remaining commands", oxygen_commands)
+		// fmt.Println("Oxygen MSB index", i, "MSB Bit", msbbit-48, "remaining commands", oxygen_commands)
 	}
-	return 0
+
+	// Loop over the list of MSB bits in CO2.
+	for i := 0; i < len(cotwo); i++ {
+		// MSB of all the bits in this position.
+		msbbit := cotwo[i]
+
+		// Commands that we're keeping from this loop.
+		var kept_commands []string
+
+		// fmt.Println("Bitness to keep:", msbbit-48, "in position", i)
+
+		// Check if there are more than two commands left.  If so..
+		if len(cotwo_commands) > 2 {
+			// Now loop over all our commands
+			for j := 0; j < len(cotwo_commands); j++ {
+				// Test if a command, bit position i, matches.
+				if cotwo_commands[j][i] == msbbit {
+					kept_commands = append(kept_commands, cotwo_commands[j])
+				}
+			}
+		} else if len(cotwo_commands) == 2 {
+			// If not, we need to find which command is "bigger".
+			first, _ := strconv.ParseInt(cotwo_commands[0], 2, 64)
+			second, _ := strconv.ParseInt(cotwo_commands[1], 2, 64)
+			if first < second {
+				kept_commands = append(kept_commands, cotwo_commands[0])
+			} else {
+				kept_commands = append(kept_commands, cotwo_commands[1])
+			}
+		} else {
+			break
+		}
+		cotwo_commands = kept_commands
+		//fmt.Println("CO2 MSB index", i, "MSB Bit", msbbit-48, "remaining commands", cotwo_commands)
+	}
+
+	// oxygen_commands now contains the binary value of our oxygen.
+	// cotwo_commands contains the binary value of our co2.
+
+	oxygen_value, _ := strconv.ParseInt(oxygen_commands[0], 2, 64)
+	cotwo_value, _ := strconv.ParseInt(cotwo_commands[0], 2, 64)
+
+	fmt.Println(oxygen_commands[0], cotwo_commands[0], oxygen_value, cotwo_value)
+
+	return int(oxygen_value) * int(cotwo_value)
 }
 
 func remove(slice []string, s int) []string {
