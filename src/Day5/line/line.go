@@ -26,6 +26,61 @@ func New(rowInfo string) Line {
 	return l
 }
 
-func (l *Line) IsStraight() bool {
-	return (l.Start.X == l.End.X) || (l.Start.Y == l.End.Y)
+func (l *Line) PointsBetweeen() []vertex.Vertex {
+	var vs []vertex.Vertex
+
+	// Horizontal starigth line
+	if l.Start.X == l.End.X {
+		if l.Start.Y < l.End.Y {
+			for y := l.Start.Y; y <= l.End.Y; y++ {
+				vs = append(vs, vertex.NewFromInt(l.Start.X, y))
+			}
+		} else {
+			for y := l.End.Y; y <= l.Start.Y; y++ {
+				vs = append(vs, vertex.NewFromInt(l.Start.X, y))
+			}
+		}
+	} else // Vertical straigth line.
+	if l.Start.Y == l.End.Y {
+		if l.Start.X < l.End.X {
+			for x := l.Start.X; x <= l.End.X; x++ {
+				vs = append(vs, vertex.NewFromInt(x, l.Start.Y))
+			}
+		} else {
+			for x := l.End.X; x <= l.Start.X; x++ {
+				vs = append(vs, vertex.NewFromInt(x, l.Start.Y))
+			}
+		}
+	} else // Angled line.
+	{
+		// Find slope, but since origin is top-left, not bottom-left, invert this?
+		m := -1 * ((l.End.Y - l.Start.Y) / (l.End.X - l.Start.X))
+		if m < 0 {
+			if l.Start.X < l.End.X {
+				for x := l.Start.X; x <= l.End.X; x++ {
+					vs = append(vs, vertex.NewFromInt(x, l.Start.Y+(x-l.Start.X)))
+				}
+			} else {
+				for x := l.End.X; x <= l.Start.X; x++ {
+					vs = append(vs, vertex.NewFromInt(x, l.End.Y+(x-l.End.X)))
+				}
+			}
+		} else {
+			if l.Start.X < l.End.X {
+				for x := l.Start.X; x <= l.End.X; x++ {
+					vs = append(vs, vertex.NewFromInt(x, l.Start.Y-(x-l.Start.X)))
+				}
+			} else {
+				for x := l.End.X; x <= l.Start.X; x++ {
+					vs = append(vs, vertex.NewFromInt(x, l.End.Y-(x-l.End.X)))
+				}
+			}
+		}
+	}
+
+	return vs
 }
+
+// func (l *Line) IsStraight() bool {
+// 	return (l.Start.X == l.End.X) || (l.Start.Y == l.End.Y)
+// }

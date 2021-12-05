@@ -20,12 +20,12 @@ func main() {
 	}
 
 	// Find the max Y and Y so we can define our seafloor map.
-	xmax, ymax := findMaxInLines(lines)
+	_, _, absmax := findMaxInLines(lines)
 
 	// Now, we make a fixed size array of ints representing the floor.
-	seafloor := make([][]int, xmax+10)
+	seafloor := make([][]int, absmax+1)
 	for i := 0; i < len(seafloor); i++ {
-		seafloor[i] = make([]int, ymax+10)
+		seafloor[i] = make([]int, absmax+1)
 	}
 
 	// Start drawing lines.
@@ -43,41 +43,22 @@ func main() {
 		}
 	}
 
-	fmt.Println(seafloor)
+	//fmt.Println(seafloor)
 	fmt.Println(overlapCount)
 
 }
 
 func drawLine(s [][]int, l line.Line) {
-	if l.IsStraight() {
-		// But is it going horizontally or vertically?
-		if l.Start.X == l.End.X {
-			if l.Start.Y < l.End.Y {
-				for i := l.Start.Y; i <= l.End.Y; i++ {
-					s[i][l.Start.X] += 1
-				}
-			} else {
-				for i := l.End.Y; i <= l.Start.Y; i++ {
-					s[i][l.Start.X] += 1
-				}
-			}
-		} else {
-			if l.Start.X < l.End.X {
-				for i := l.Start.X; i <= l.End.X; i++ {
-					s[l.Start.Y][i] += 1
-				}
-			} else {
-				for i := l.End.X; i <= l.Start.X; i++ {
-					s[l.Start.Y][i] += 1
-				}
-			}
-		}
+	for _, v := range l.PointsBetweeen() {
+		// This has to be "backwards" to our usual X, Y because we're defining all the rows FIRST (the Y coordinate), then which value of the COLUMN next (the X coordinate).
+		s[v.Y][v.X] += 1
 	}
 }
 
-func findMaxInLines(lines []line.Line) (int, int) {
+func findMaxInLines(lines []line.Line) (int, int, int) {
 	var xmax int
 	var ymax int
+	var absmax int
 
 	for _, value := range lines {
 		if value.Start.X > xmax {
@@ -93,8 +74,13 @@ func findMaxInLines(lines []line.Line) (int, int) {
 			ymax = value.End.Y
 		}
 	}
+	if xmax > ymax {
+		absmax = xmax
+	} else {
+		absmax = ymax
+	}
 
-	return xmax, ymax
+	return xmax, ymax, absmax
 }
 
 func readfile(filename string) []string {
