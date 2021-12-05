@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"./bingo"
+	"Day4/bingo"
 )
 
 func main() {

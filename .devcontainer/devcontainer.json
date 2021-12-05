@@ -17,9 +17,10 @@
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
+		"go.inferGopath": true,
 		"go.toolsManagement.checkForUpdates": "local",
 		"go.useLanguageServer": true,
-		"go.gopath": "/go",
+		// "go.gopath": "/go",
 		"go.goroot": "/usr/local/go"
 	},
 
