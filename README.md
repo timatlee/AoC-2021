@@ -133,3 +133,13 @@ Replaced a bunch of Regex:
 with one function call: `fmt.Sscanf(rowInfo, "%d,%d -> %d,%d", &x1, &y1, &x2, &y2)`
 
 Will have to try to remember this in the future. This would make parsing a lot of these inputs considerably quicker.
+
+## Day 6
+
+I looked at ths before I went to bed, and thought "ok, I'll make a Fish object, then that object will keep track of it's own age".  Easy. I would need to figure out how to "tick" each fish to increment their day count, then figure out how use a member method as an object factory ..  all new to me, but stuff to learn.
+
+The next morning, I saw the memes on the AoC Subreddit, people talking about exhausting compute resources, etc.  And someone mentioned **being able to solve it in compile time**.
+
+The thing is..  you don't need an object to represent a fish. It doesn't get us anyhting, other than an exponentially growing set of objects. A fish can only be around for 9 days at absolute maximum, and we just need to change counters of an age index on a counter.
+
+So..  basically a map, or an array, of ages and fish counts.
