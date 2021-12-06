@@ -112,4 +112,24 @@ I need to make a fixed length 2d array based on the maximum size of the X and Y 
 
 Found https://stackoverflow.com/questions/39804861/what-is-a-concise-way-to-create-a-2d-slice-in-go/39806983 , but the memory-contiguous way I couldn't quite wrap my skull around, so I went for the "easy" way.
 
+### Unit Testing
 
+Started playing around with this.  VSCode ships with some Table Driven Tests.  Detailed at https://dave.cheney.net/2019/05/07/prefer-table-driven-tests.
+
+### Learned about fmt.Sscanf
+
+From https://skarlso.github.io/2021/12/05/aoc-day5/.
+
+Replaced a bunch of Regex:
+```go
+		var compiledRegex = regexp.MustCompile(`^(?P<x1>\d+),(?P<y1>\d+) -> (?P<x2>\d+),(?P<y2>\d+)$`)
+		matches := compiledRegex.FindStringSubmatch(rowInfo)
+		x1 := matches[compiledRegex.SubexpIndex("x1")]
+		y1 := matches[compiledRegex.SubexpIndex("y1")]
+		x2 := matches[compiledRegex.SubexpIndex("x2")]
+		y2 := matches[compiledRegex.SubexpIndex("y2")]
+```
+
+with one function call: `fmt.Sscanf(rowInfo, "%d,%d -> %d,%d", &x1, &y1, &x2, &y2)`
+
+Will have to try to remember this in the future. This would make parsing a lot of these inputs considerably quicker.
