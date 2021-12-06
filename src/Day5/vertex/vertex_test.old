@@ -1,0 +1,19 @@
+package vertex
+
+import (
+	"testing"
+)
+
+func TestNewFromInt(t *testing.T) {
+	v := NewFromInt(1, 1)
+	if !(v.X == 1 && v.Y == 1) {
+		t.Errorf("Both points must be 1's")
+	}
+}
+
+func TestNewFromString(t *testing.T) {
+	v := NewFromString("1", "1")
+	if !(v.X == 1 && v.Y == 1) {
+		t.Errorf("Both points must be 1's")
+	}
+}
