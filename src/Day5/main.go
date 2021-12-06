@@ -20,12 +20,12 @@ func main() {
 	}
 
 	// Find the max Y and Y so we can define our seafloor map.
-	_, _, absmax := findMaxInLines(lines)
+	xmax, ymax, _ := findMaxInLines(lines)
 
 	// Now, we make a fixed size array of ints representing the floor.
-	seafloor := make([][]int, absmax+1)
+	seafloor := make([][]int, ymax+1)
 	for i := 0; i < len(seafloor); i++ {
-		seafloor[i] = make([]int, absmax+1)
+		seafloor[i] = make([]int, xmax+1)
 	}
 
 	// Start drawing lines.
