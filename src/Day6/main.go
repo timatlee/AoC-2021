@@ -12,7 +12,7 @@ import (
 func main() {
 	//filecontent := readfile("testinput.txt")
 	filecontent := readfile("day6input.txt")
-	var days int = 80
+	var days int = 256
 
 	fishStarts := strings.Split(filecontent[0], ",")
 
