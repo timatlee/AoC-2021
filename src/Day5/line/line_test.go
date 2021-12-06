@@ -52,6 +52,46 @@ func TestLine_PointsBetweeen(t *testing.T) {
 		want   []vertex.Vertex
 	}{
 		// TODO: Add test cases.
+		{
+			name:   "Horizonal line, left to right",
+			fields: fields{Start: vertex.NewFromInt(0, 0), End: vertex.NewFromInt(5, 0)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 1, Y: 0}, {X: 2, Y: 0}, {X: 3, Y: 0}, {X: 4, Y: 0}, {X: 5, Y: 0}},
+		},
+		{
+			name:   "Horizonal line, right to left",
+			fields: fields{Start: vertex.NewFromInt(5, 0), End: vertex.NewFromInt(0, 0)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 1, Y: 0}, {X: 2, Y: 0}, {X: 3, Y: 0}, {X: 4, Y: 0}, {X: 5, Y: 0}},
+		},
+		{
+			name:   "Vertical line, top to bottom",
+			fields: fields{Start: vertex.NewFromInt(0, 0), End: vertex.NewFromInt(0, 5)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 0, Y: 1}, {X: 0, Y: 2}, {X: 0, Y: 3}, {X: 0, Y: 4}, {X: 0, Y: 5}},
+		},
+		{
+			name:   "Vertical line, bottom to top",
+			fields: fields{Start: vertex.NewFromInt(0, 5), End: vertex.NewFromInt(0, 0)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 0, Y: 1}, {X: 0, Y: 2}, {X: 0, Y: 3}, {X: 0, Y: 4}, {X: 0, Y: 5}},
+		},
+		{
+			name:   "Angled, Top right to bottom left",
+			fields: fields{Start: vertex.NewFromInt(5, 0), End: vertex.NewFromInt(0, 5)},
+			want:   []vertex.Vertex{{X: 0, Y: 5}, {X: 1, Y: 4}, {X: 2, Y: 3}, {X: 3, Y: 2}, {X: 4, Y: 1}, {X: 5, Y: 0}},
+		},
+		{
+			name:   "Angled, bottom left to top right",
+			fields: fields{Start: vertex.NewFromInt(0, 5), End: vertex.NewFromInt(5, 0)},
+			want:   []vertex.Vertex{{X: 0, Y: 5}, {X: 1, Y: 4}, {X: 2, Y: 3}, {X: 3, Y: 2}, {X: 4, Y: 1}, {X: 5, Y: 0}},
+		},
+		{
+			name:   "Angled, top left to borrom right",
+			fields: fields{Start: vertex.NewFromInt(0, 0), End: vertex.NewFromInt(5, 5)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 1, Y: 1}, {X: 2, Y: 2}, {X: 3, Y: 3}, {X: 4, Y: 4}, {X: 5, Y: 5}},
+		},
+		{
+			name:   "Angled, top left to borrom right",
+			fields: fields{Start: vertex.NewFromInt(5, 5), End: vertex.NewFromInt(0, 0)},
+			want:   []vertex.Vertex{{X: 0, Y: 0}, {X: 1, Y: 1}, {X: 2, Y: 2}, {X: 3, Y: 3}, {X: 4, Y: 4}, {X: 5, Y: 5}},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
