@@ -143,3 +143,11 @@ The next morning, I saw the memes on the AoC Subreddit, people talking about exh
 The thing is..  you don't need an object to represent a fish. It doesn't get us anyhting, other than an exponentially growing set of objects. A fish can only be around for 9 days at absolute maximum, and we just need to change counters of an age index on a counter.
 
 So..  basically a map, or an array, of ages and fish counts.
+
+## Day 8
+
+Had a real hard time understanding this one for a bit.
+
+Followed this "logic on paper" solution:
+https://www.reddit.com/r/adventofcode/comments/rbvpui/2021_day_8_part_2_my_logic_on_paper_i_used_python/
+
