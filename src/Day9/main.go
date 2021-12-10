@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 )
 
@@ -28,6 +29,42 @@ func main() {
 
 	}
 	fmt.Printf("risk: %v\n", sumrisk)
+
+	// Part 2.  First..  I'm going to give the perimeter of the seafloor a height of 9.
+	// This makes basins end at the perimeter, effectively.
+	// Did this in parseContentto2darray() function.
+
+	// Next, iterate over our known lowspots (basins)
+	var basinSizes []int
+	for _, v := range lowspots {
+		// Count low spots in the basin.
+		foo := countLowSpots(seafloor, v.X, v.Y, 0)
+		basinSizes = append(basinSizes, foo)
+	}
+	sort.Ints(basinSizes)
+
+	parts := basinSizes[len(basinSizes)-3:]
+	fmt.Printf("parts: %v\n", parts)
+
+	fmt.Println(parts[0] * parts[1] * parts[2])
+}
+
+func countLowSpots(m [][]int, x int, y int, i int) int {
+	// Check if the value at this coordinate is 9. If so, we're done here.
+	v := m[y][x]
+	if v != 9 {
+		i += 1
+		// Recursion!
+		// Check the coordinates around this point.
+		m[y][x] = 9
+		i = countLowSpots(m, x, y+1, i)
+		i = countLowSpots(m, x, y-1, i)
+		i = countLowSpots(m, x-1, y, i)
+		i = countLowSpots(m, x+1, y, i)
+	}
+
+	return i
+
 }
 
 func checkPoint(s [][]int, v vertex.Vertex) {
@@ -50,8 +87,8 @@ func checkPoint(s [][]int, v vertex.Vertex) {
 func findLowSpots(seafloor [][]int) []vertex.Vertex {
 	var lowspots []vertex.Vertex
 
-	for y := range seafloor {
-		for x := range seafloor[y] {
+	for y := 1; y < len(seafloor)-1; y++ {
+		for x := 1; x < len(seafloor[y])-1; x++ {
 			isLowest := true
 			c := seafloor[y][x]
 
@@ -97,14 +134,27 @@ func findLowSpots(seafloor [][]int) []vertex.Vertex {
 
 func parseContentTo2dArray(content []string) [][]int {
 	var seafloor [][]int
+	var zeroRow = make([]int, len(content[1])+2)
+	for i := range zeroRow {
+		zeroRow[i] = 9
+	}
+
+	zeroRowCopy := make([]int, len(zeroRow))
+	copy(zeroRowCopy, zeroRow)
+
+	seafloor = append(seafloor, zeroRow)
 	for i := range content {
-		var row = make([]int, len(content[i]))
+		var row = make([]int, len(content[i])+2)
+
+		row[0] = 9
 		for j := range content[i] {
 			value, _ := strconv.Atoi(string(content[i][j]))
-			row[j] = value
+			row[j+1] = value
 		}
+		row[len(row)-1] = 9
 		seafloor = append(seafloor, row)
 	}
+	seafloor = append(seafloor, zeroRowCopy)
 
 	return seafloor
 }
