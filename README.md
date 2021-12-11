@@ -151,3 +151,12 @@ Had a real hard time understanding this one for a bit.
 Followed this "logic on paper" solution:
 https://www.reddit.com/r/adventofcode/comments/rbvpui/2021_day_8_part_2_my_logic_on_paper_i_used_python/
 
+## Day 9
+
+Fun with recusion. I forgot to set a flag so that the recursive function wouldn't just "bounce" back and forth between X-1 and X+1. This was fixed by setting the elevation to 9 once we counted it as part of the basin.
+
+## Day 10
+
+Hard time with this one, probably because of the day I had.
+
+Wound up treating the list like a stack, and popping elements off it as they were "allowed".  There's a lot of copy-pasta here, and opportunities to improve the code considerably.
