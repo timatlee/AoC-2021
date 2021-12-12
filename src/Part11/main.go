@@ -25,10 +25,35 @@ func main() {
 
 	for i := 0; i < 100; i++ {
 		totalFlashes += stepOne(octopus)
-		PrintOctopus(octopus)
 	}
-	println(totalFlashes)
+	fmt.Println("Part 1:", totalFlashes)
 
+	// Part 2 ..
+	octopus2 := parseInput(filecontent)
+	var stepCounter int = 0
+	for {
+		stepCounter += 1
+		stepOne(octopus2)
+		if partTwo(octopus2) {
+			fmt.Println(stepCounter)
+			break
+		}
+	}
+
+}
+
+func partTwo(o [][]Octopus) bool {
+	var allZeros bool = true
+	for y := 0; y < len(o); y++ {
+		for x := 0; x < len(o[y]); x++ {
+			if o[y][x].Energy != 0 {
+				allZeros = false
+				return allZeros
+			}
+		}
+	}
+
+	return allZeros
 }
 
 func stepOne(o [][]Octopus) int {
