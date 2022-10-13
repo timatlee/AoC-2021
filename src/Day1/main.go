@@ -19,7 +19,6 @@ func main() {
 	println("test?", test(numbers))
 	println("Part 2 actual data: ", find_deeper_count_sliding_window(realNumbers, 3))
 	println("Part 2 actual data: ", test(realNumbers))
-
 }
 
 func test(numbers []int) int {
