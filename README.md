@@ -162,5 +162,3 @@ Hard time with this one, probably because of the day I had.
 Wound up treating the list like a stack, and popping elements off it as they were "allowed".  There's a lot of copy-pasta here, and opportunities to improve the code considerably.
 
 https://github.com/jdrst/adventofgo/blob/main/2021/15/main.go
-
-# THis is an addition to the Readme.  Does it get mirrored?
